@@ -39,24 +39,24 @@ cat > $PLANROOT/params.yml <<EOF
 meta:
   size: <%= plan["vm_type"] || 'default' %>
   net:  <%= plan["network"] || 'redis-service' %>
+  
+  <% if plan["azs"] %>
+    azs: <%= plan["azs"] %>
+  <% end %>
 
   <% if plan["type"] == "standalone" %>
-  <% if plan["persist"] %>
-  persistent: true
-  disk: <%= plan["disk"] || 1_024 %>
-  <% else %>
-  persistent: false
-  <% end %>
+    <% if plan["persist"] %>
+      persistent: true
+      disk: <%= plan["disk"] || 1_024 %>
+    <% else %>
+      persistent: false
+    <% end %>
   <% end %>
 
   <% if plan["type"] == "cluster" && plan["masters"] > 0 %>
-  masters:   <%= plan["masters"] %>
-  replicas:  <%= plan["replicas"] || 1 %>
-  instances: <%= plan["masters"] + plan["masters"] * (plan["replicas"] || 1) %>
-
-  <% if plan["azs"] %>
-  azs: <%= plan["azs"] %>
-  <% end %>
+    masters:   <%= plan["masters"] %>
+    replicas:  <%= plan["replicas"] || 1 %>
+    instances: <%= plan["masters"] + plan["masters"] * (plan["replicas"] || 1) %>
   <% end %>
 EOF
 
